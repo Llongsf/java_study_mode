@@ -3,7 +3,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 public class UsernameChecker {
     public static void main(String[] args) {
-        //String input = "your_input_string"; // 替换为实际要检查的用户名
+        //yString input = "your_input_string"; // 替换为实际要检查的用户名
         //boolean isValid = checkUsername(input);
         //System.out.println("Username is valid: " + isValid);
 
@@ -46,6 +46,7 @@ public class UsernameChecker {
             MessageDigest instance = MessageDigest.getInstance("MD5");
             instance.reset();
             instance.update("zhishixuebao".getBytes());
+            
             String hexString = toHexString(instance.digest(), "");
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < hexString.length(); i += 2) {
