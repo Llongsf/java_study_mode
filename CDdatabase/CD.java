@@ -1,6 +1,6 @@
 package CDdatabase;
 
-public class CD 
+public class CD extends Item
 {
     private String song;
 	private String singer;
