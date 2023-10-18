@@ -2,7 +2,8 @@ package CDdatabase;
 
 import java.util.ArrayList;
 
-public class Database extends Item{
+public class Database //extends Item
+{
     // ArrayList<CD> cd = new ArrayList<CD>();
     // ArrayList<DVD> dvd = new ArrayList<DVD>();
     ArrayList<Item> items = new ArrayList<Item>();
@@ -41,5 +42,6 @@ public class Database extends Item{
         //db为Database类对象，调用add1方法(为了避免混淆，加了一个1)，传入的参数是一个带参数的新建的CD方法类型
         //传入后，再用ArrayList方法的add方法为cd新添加一个元素(c是形参)
         db.list2();
+        // db.print();
     }
 }
