@@ -1,6 +1,3 @@
-package runoob;
-
-
 public class SortTestHelper {
     // SortTestHelper不允许产生任何实例
     private SortTestHelper(){}
@@ -13,7 +10,7 @@ public class SortTestHelper {
         Integer[] arr = new Integer[n];
 
         for (int i = 0; i < n; i++)
-            arr[i] = new Integer((int)(Math.random() * (rangeR - rangeL + 1) + rangeL));
+            arr[i] = new ((int)(Math.random() * (rangeR - rangeL + 1) + rangeL));
         return arr;
     }
 

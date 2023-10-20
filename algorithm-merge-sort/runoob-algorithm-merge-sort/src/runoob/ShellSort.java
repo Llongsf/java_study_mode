@@ -1,5 +1,3 @@
-package runoob;
-
 /**
  * 希尔排序
  */

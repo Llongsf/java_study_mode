@@ -1,5 +1,3 @@
-package runoob;
-
 /**
  * 选择排序
  */

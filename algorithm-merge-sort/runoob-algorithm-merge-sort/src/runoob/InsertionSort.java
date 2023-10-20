@@ -1,4 +1,3 @@
-package runoob;
 
 /**
  * 插入排序

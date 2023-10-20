@@ -1,5 +1,3 @@
-package runoob;
-
 import java.util.Arrays;
 
 /**

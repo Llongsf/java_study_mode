@@ -1,5 +1,5 @@
-package runoob;
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class Quick_Sort  
 {
@@ -12,15 +12,15 @@ public class Quick_Sort
             return;
         }
         int temp = arr[low];
-        int left = low;
-        int right = high;
+        int left = low;//左标签
+        int right = high;//右标签
         int t;
         while(left < right)
         {
             //为什么要先right标签向左遍历，首先是因为需要升序排序操作
             //如果先从右边开始，最后i、j停留的位置的 值 肯定是要小于 temp的
             //如果先从左边开始，循环结束后的 i j碰面的时的值肯定是要 大于 key的 
-            //此时再交换key与索引位置 相当于把比key大的值放到了key左边 也就违背了快排的条件
+            //此时再交换key与索引位置 相当于把比key大的值放到了key左边,也就违背了快排的原则
             while(left < right && arr[right] >= temp)//right向左遍历，寻找到比基准数字小的就停止
             {
                 right--;
@@ -46,11 +46,29 @@ public class Quick_Sort
     }
     public static void main(String[] args)
     {   
-        int arr[] = {5,3,6,9,7,44,55,61,25,10};
-        Sort(arr,0, arr.length - 1);
+        
+        Scanner scan = new Scanner(System.in);//创建一个Scanner对象
+        System.out.println("please input length of array:");
+
+        int num = scan.nextInt();
+        int[] arr = new int[num];//创建一个数组
+
+        System.out.println("please input the numbers of array:");
+        for (int i = 0; i < num; i++)//输入数组的内容
+        {
+            arr[i] = scan.nextInt();
+        }
+        scan.close();
+
+        System.out.println("\n~~array before quicksort:");
+        System.out.println(Arrays.toString(arr));
+        
+        Sort(arr,0, arr.length - 1);//开始排序
+        
+        System.out.println("\n~~array after quicksort:");
         System.out.println(Arrays.toString(arr));
 
     }
 }
-
+//算法描述，源程序，复杂度分析，程序的运行结果及截图，个人总结
 
