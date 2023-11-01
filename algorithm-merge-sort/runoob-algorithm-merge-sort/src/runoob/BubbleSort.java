@@ -46,7 +46,8 @@ public class BubbleSort {
         
         scan.close();
         System.out.println("\n~~array before Bubble sort:");
-        System.out.println(Arrays.toString(arr));
+        System.out.println(Arrays.toString(arr));//输出排序前的数组
+
         System.out.println("\n~~array after Bubble sort:");
         Bubble_Sort(arr);
         System.out.println(Arrays.toString(arr));
