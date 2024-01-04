@@ -4,6 +4,8 @@ import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.NoSuchElementException;
+import org.openqa.selenium.TimeoutException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.edge.EdgeDriver;
@@ -51,7 +53,7 @@ public class Zhiwang_spider extends Test1
             // 进程停顿一下
             try 
             {
-                Thread.sleep(4000);
+                Thread.sleep(3000);
             }
             catch (Exception e) 
             {
@@ -62,25 +64,7 @@ public class Zhiwang_spider extends Test1
             // 获取页面内所有论文链接<a>标签
             List<WebElement> search_aElement_Results = driver.findElements(By.className("fz14"));
 
-            // 题目列表
-            List<String> titleList = new ArrayList<String>();
-            // 链接列表
-            List<String> herfList = new ArrayList<String>();
             
-            // 摘要列表
-            // List<String> abstractList = new ArrayList<String>();
-
-            for(WebElement aElement: search_aElement_Results)
-            {
-                // 获取题目
-                String title = aElement.getText();
-                titleList.add(title);
-                
-                // 获取论文链接,href属性值
-                String herfValue = aElement.getAttribute("href");
-                herfList.add(herfValue);
-
-            }
             // 获取页面内所有论文时间信息
             List<WebElement> search_time_Results = driver.findElements(By.className("date"));
             List<String> timeList =new ArrayList<String>();
@@ -103,36 +87,82 @@ public class Zhiwang_spider extends Test1
                 authorList.add(author);
                 
             }
-            
+            // 题目列表
+            List<String> titleList = new ArrayList<String>();
+            // 链接列表
+            List<String> herfList = new ArrayList<String>();
+            // 摘要列表
+            List<String> abstractList = new ArrayList<String>();
+            for(WebElement aElement: search_aElement_Results)
+            {
+                // 获取题目
+                String title = aElement.getText();
+                titleList.add(title);
+                
+                // 获取论文链接,href属性值
+                String herfValue = aElement.getAttribute("href");
+                herfList.add(herfValue);
+
+                
+
+                String abab = new String();
+                // 获取摘要
                 try 
                 {
-                    for(int i = 0; i < authorList.size(); i++)
-                    {
-                        Thread.sleep(500);
-                        // 从列表中获取当前论文信息
-                        
-                        String cur_title = titleList.get(i);
-                        String cur_author = authorList.get(i);
-                        String cur_time = timeList.get(i);
-                        String cur_hrefValue = herfList.get(i);
-                        String cur_abstracts = new String("");
-                        // 总论文数+1
-                        total_numberOf_papers +=1;
-                        // 保存到数据库
-                        saveToDatabase(total_numberOf_papers, cur_title, cur_author, cur_time,cur_abstracts, cur_hrefValue, 1);
-                        
-                        // 保存成功并输出
-                        System.out.println("\ntitle:"+cur_title);  
-                        System.out.format("paper %d load successfully!\n", total_numberOf_papers);
-                       
-                    }
-                    
+                    // 进入链接页面
+                    driver.get(herfValue);
+
+                    test1.stop(1000);
+
+                    abab = driver.findElement(By.className("row")).getText();
                 } 
-                catch (Exception e) 
+                catch (NoSuchElementException e) 
                 {
-                    // TODO: handle exception
-                    e.printStackTrace();
+                    System.out.println("Cannot not find abstract~");
+                    abab = "NULL";
                 }
+                catch (TimeoutException e) 
+                {
+                    System.out.println("Time out when getting abstract~");
+                    abab = "NULL";
+                }
+                
+                abstractList.add(abab);
+
+                // 页面回退
+                driver.navigate().back();
+
+                test1.stop(1000);
+            }
+
+            try 
+            {
+                for(int i = 0; i < authorList.size(); i++)
+                {
+                    // 从列表中获取当前论文信息
+                    
+                    String cur_title = titleList.get(i);
+                    String cur_author = authorList.get(i);
+                    String cur_time = timeList.get(i);
+                    String cur_hrefValue = herfList.get(i);
+                    String cur_abstracts = abstractList.get(i);
+                    // 总论文数+1
+                    total_numberOf_papers +=1;
+                    // 保存到数据库
+                    saveToDatabase(total_numberOf_papers, cur_title, cur_author, cur_time,cur_abstracts, cur_hrefValue, 1);
+                    
+                    // 保存成功并输出
+                    System.out.println("\ntitle:"+cur_title);  
+                    System.out.format("paper %d load successfully!\n", total_numberOf_papers);
+                    
+                }
+                
+            } 
+            catch (Exception e) 
+            {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
             try 
             {
                 WebElement nextPageButton = driver.findElement(By.id("PageNext"));

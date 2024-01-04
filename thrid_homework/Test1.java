@@ -59,8 +59,7 @@ public class Test1
         // 菜单界面
         System.out.println("     | Welcome to Paper-spider system! |\n");
         System.out.print("  1. China Zhiwang\n" + 
-                "  2. Wanfang\n" +
-                "  3. Douban\n" +
+                "  2. Douban\n" +
                 "Please choose the website you want to collect papers:");
         // 创建对象，保存输入的选项
         Scanner Scanner = new Scanner(System.in);
@@ -73,7 +72,6 @@ public class Test1
         // 定义爬虫测试类对象
         Zhiwang_spider zhiwang = new Zhiwang_spider();
         Douban_spider douban = new Douban_spider();
-        Wanfang_spider wanfang = new Wanfang_spider();
         switch(type) 
         {
             case 1:
@@ -82,10 +80,6 @@ public class Test1
             break;
 
             case 2:
-            wanfang.collect_Wanfang(number_Of_pages);
-            break;
-
-            case 3:
             douban.collect_Douban(number_Of_pages);
             break;
 
@@ -165,9 +159,5 @@ public class Test1
         {
             e.printStackTrace();
         }
-    }
-    public void saveToDatabase1()
-    {
-        
     }
 }

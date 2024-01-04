@@ -2,6 +2,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -37,8 +41,8 @@ public class Wanfang_spider extends Test1
         // 导航到论文网站
         driver.get("https://w.wanfangdata.com.cn/index.html?index=true");
 
-        // 设置超时时间不超过5秒
-        driver.manage().timeouts().pageLoadTimeout(5, TimeUnit.SECONDS);
+        // 设置超时时间不超过6秒
+        driver.manage().timeouts().pageLoadTimeout(6, TimeUnit.SECONDS);
         
         // 获取输入框，输入selenium
         driver.findElement(By.id("search-input")).sendKeys(keywords);
@@ -51,7 +55,7 @@ public class Wanfang_spider extends Test1
             // 进程停顿一下
             try 
             {
-                Thread.sleep(3000);
+                Thread.sleep(2000);
             }
             catch (Exception e) 
             {
@@ -73,62 +77,92 @@ public class Wanfang_spider extends Test1
             // 摘要列表
             List<String> abstractList = new ArrayList<String>();
 
-            for(WebElement aElement: search_aElement_Results)
+            try 
             {
-                aElement.click();
+                for(WebElement aElement: search_aElement_Results)
+                {
+                    // 进程停止3秒钟
+                    test1.stop(2000);
 
-                // 获取题目
-                String title = driver.findElement(By.cssSelector("class=['detailTitelInner']")).getText();
-                titleList.add(title);
+                    // 模拟点击进入页面
+                    aElement.click();
+
+                    // 获取论文链接,href属性值
+                    String herfValue = driver.getCurrentUrl();
+                    herfList.add(herfValue);
+                    
+                    // 使用 Jsoup 连接到网页并获取整个页面的 HTML 代码
+                    Document doc = Jsoup.connect(herfValue).get();
+                    String htmlCode = doc.html();
+                    System.out.println(htmlCode);
+                    
+                    Elements elements1 = doc.select(".detailTitleCN");
+                    Elements elements2 = elements1.first().getElementsByTag("span");
+                    for(Element ele : elements2)
+                    {
+                        System.out.println(ele.text());
+                    }
+
+                    // 获取题目
+                    String title = driver.findElement(By.xpath("/html/body/div[3]/div[2]/div/div/div[2]/div[1]/div[1]/div/div[2]/div/div/span")).getText();
+                    titleList.add(title);
+                    
+                    
+                    // 获取页面内所有论文时间信息
+                    String time = driver.findElement(By.xpath("//*[@id=\"essential\"]/div[6]/div[4]/div/text()")).getText();
+                    timeList.add(time);
+
+                    // 获取作者
+                    String author = driver.findElement(By.xpath("//*[@id=\"essential\"]/div[3]/div/a/span")).getText();
+                    authorList.add(author);
+                    
+                    // 获取摘要
+                    String ab = driver.findElement(By.xpath("//*[@id=\"essential\"]/div[6]/div[1]/span[2]/span/span/text()")).getText();
+                    abstractList.add(ab);
+
+                    driver.close();
+                }
                 
-                // 获取论文链接,href属性值
-                String herfValue = driver.getCurrentUrl();
-                herfList.add(herfValue);
-
-                // 获取页面内所有论文时间信息
-                String time = driver.findElement(By.xpath("//*[@id=\"essential\"]/div[6]/div[4]/div/text()")).getText();
-                timeList.add(time);
-
-                // 获取作者
-                String author = driver.findElement(By.xpath("//*[@id=\"essential\"]/div[3]/div/a/span")).getText();
-                authorList.add(author);
-                
-                // 获取摘要
-                String ab = driver.findElement(By.xpath("//*[@id=\"essential\"]/div[6]/div[1]/span[2]/span/span")).getText();
-                abstractList.add(ab);
-
+            } 
+            catch (Exception e) 
+            {
+                // TODO: handle exception
                 driver.close();
+                
+                e.printStackTrace();
+
             }
             
-                try 
+            
+            try 
+            {
+                for(int i = 0; i < authorList.size(); i++)
                 {
-                    for(int i = 0; i < authorList.size(); i++)
-                    {
-                        Thread.sleep(500);
-                        // 从列表中获取当前论文信息
-                        
-                        String cur_title = titleList.get(i);
-                        String cur_author = authorList.get(i);
-                        String cur_time = timeList.get(i);
-                        String cur_hrefValue = herfList.get(i);
-                        String cur_abstracts = new String("");
-                        // 总论文数+1
-                        total_numberOf_papers +=1;
-                        // 保存到数据库
-                        saveToDatabase(total_numberOf_papers, cur_title, cur_author, cur_time,cur_abstracts, cur_hrefValue, 1);
-                        
-                        // 保存成功并输出
-                        System.out.println("\ntitle:"+cur_title);  
-                        System.out.format("paper %d load successfully!\n", total_numberOf_papers);
-                       
-                    }
+                    Thread.sleep(500);
+                    // 从列表中获取当前论文信息
                     
-                } 
-                catch (Exception e) 
-                {
-                    // TODO: handle exception
-                    e.printStackTrace();
+                    String cur_title = titleList.get(i);
+                    String cur_author = authorList.get(i);
+                    String cur_time = timeList.get(i);
+                    String cur_hrefValue = herfList.get(i);
+                    String cur_abstracts = new String("");
+                    // 总论文数+1
+                    total_numberOf_papers +=1;
+                    // 保存到数据库
+                    saveToDatabase(total_numberOf_papers, cur_title, cur_author, cur_time,cur_abstracts, cur_hrefValue, 1);
+                    
+                    // 保存成功并输出
+                    System.out.println("\ntitle:"+cur_title);  
+                    System.out.format("paper %d load successfully!\n", total_numberOf_papers);
+                    
                 }
+                
+            } 
+            catch (Exception e) 
+            {
+                // TODO: handle exception
+                e.printStackTrace();
+            }
             try 
             {
                 WebElement nextPageButton = driver.findElement(By.id("next"));

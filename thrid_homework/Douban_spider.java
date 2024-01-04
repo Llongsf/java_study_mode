@@ -78,7 +78,6 @@ public class Douban_spider extends Test1
 
             }
             
-            
             try 
             {
                 for(int i = 0; i < authorList.size(); i++)
@@ -90,7 +89,7 @@ public class Douban_spider extends Test1
                     String cur_author = authorList.get(i);
                     String cur_time = timeList.get(i);
                     String cur_hrefValue = herfList.get(i);
-                    String cur_abstracts = new String("");
+                    String cur_abstracts = abstractList.get(i);
                     // 总论文数+1
                     total_numberOf_papers +=1;
                     // 保存到数据库
